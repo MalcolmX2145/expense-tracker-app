@@ -55,11 +55,3 @@ A full-stack expense tracking application built with **React, Express.js, Postgr
 - Role-based access control (future).  
 
 ---
-
-## 🛠 Installation & Setup  
-
-### **Backend (Express.js + PostgreSQL)**  
-1. Clone the repository:  
-   ```sh
-   git clone https://github.com/yourusername/expense-tracker.git
-   cd expense-tracker/backend
