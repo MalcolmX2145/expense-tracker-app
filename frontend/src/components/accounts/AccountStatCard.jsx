@@ -14,7 +14,7 @@ const AccountStatCard = ({ name, icon: Icon, value, color }) => {
         </span>
         <p className='mt-1 text-3xl font-semibold text-gray-100'>{value}</p>
       </div>
-      <button className='absolute bottom-2 right-2 p-2 rounded-full hover:shadow-lg hover:shadow-gray-500/50 transition-shadow'>
+      <button className='absolute bottom-2 right-2 p-2 rounded-full hover:shadow-lg hover:shadow-gray~-500/50 transition-shadow'>
         <Ellipsis />
       </button>
     </motion.div>
