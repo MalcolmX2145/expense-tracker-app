@@ -1,8 +1,11 @@
+import Header from "../components/Header";
 
-const Dashboards = () => {
+const Dashboard = () => {
   return (
-    <div>Dashboard</div>
-  )
-}
+    <div className="flex-1 overflow-auto relative z-10 flex flex-col items-center">
+      <Header title="Dashboard" />
+    </div>
+  );
+};
 
-export default Dashboards
+export default Dashboard;
