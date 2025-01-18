@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recha
 const categoryData = [
     { name: "Food", value: 4500 },
     { name: "Electricity", value: 3200 },
-    { name: "Soci", value: 2800 },
+    { name: "Social", value: 2800 },
     { name: "Transport", value: 2100 },
     { name: "Clothes", value: 1900 },
 ];

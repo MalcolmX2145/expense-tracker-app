@@ -1,7 +1,7 @@
 import { BarChart2, CreditCard, FileText, List, Menu, PieChart, Settings, User } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const NAVBAR_ITEMS = [
     { name: "Dashboard", icon: BarChart2, color: "#6366f1", href: "/dashboard" },
@@ -15,6 +15,7 @@ const NAVBAR_ITEMS = [
 
 const Navbar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const location = useLocation(); // Get the current location
 
     return (
         <motion.div
@@ -37,7 +38,13 @@ const Navbar = () => {
                 <nav className="mt-8 flex-grow">
                     {NAVBAR_ITEMS.map((item) => (
                         <Link key={item.href} to={item.href}>
-                            <motion.div className="flex items-center p-4 text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors mb-2">
+                            <motion.div
+                                className={`flex items-center p-4 text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors mb-2 ${
+                                    location.pathname === item.href
+                                        ? "bg-gray-700" // Add background color for active page
+                                        : ""
+                                }`}
+                            >
                                 <item.icon size={20} style={{ color: item.color, minWidth: "20px" }} />
 
                                 <AnimatePresence>

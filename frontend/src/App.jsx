@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 
 // components
@@ -13,6 +14,8 @@ import Profile from "./pages/Profile.jsx";
 import Settings from "./pages/Settings.jsx";
 
 const App = () => {
+
+  
   return (
       <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden">
         
@@ -42,3 +45,5 @@ const App = () => {
 };
 
 export default App;
+
+

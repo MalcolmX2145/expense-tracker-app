@@ -1,8 +1,11 @@
 import { Wallet, PiggyBank } from "lucide-react";
 import { motion } from "framer-motion";
 
+
+
 import Header from "../components/Header";
 import AccountStatCard from "../components/accounts/AccountStatCard";
+
 
 const Accounts = () => {
   const accounts = [
@@ -23,6 +26,7 @@ const Accounts = () => {
       >
         <div className="w-full flex flex-col items-center">
           <div className="grid grid-cols-1 gap-5 w-full max-w-4xl">
+            
             {accounts.map((account, index) => (
               <AccountStatCard 
                 key={index}
