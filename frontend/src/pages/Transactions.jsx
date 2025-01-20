@@ -26,6 +26,7 @@ const Transactions = () => {
             <Header title="Transactions" />
             <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
                 <AddTransaction onAddTransaction={addTransaction} />
+                <hr className="border-t border-gray-600 my-6" />
                 <ExpenditureTable
                     transactions={transactions}
                     onDeleteTransaction={deleteTransaction}
