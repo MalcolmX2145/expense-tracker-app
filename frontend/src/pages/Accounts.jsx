@@ -1,8 +1,6 @@
 import { Wallet, PiggyBank } from "lucide-react";
 import { motion } from "framer-motion";
 
-
-
 import Header from "../components/Header";
 import AccountStatCard from "../components/accounts/AccountStatCard";
 

@@ -1,4 +1,4 @@
-import { BarChart2, CreditCard, FileText, List, Menu, PieChart, Settings, User } from "lucide-react";
+import { BarChart2, CreditCard, FileText, List, Menu, PieChart, Settings } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -9,7 +9,6 @@ const NAVBAR_ITEMS = [
     { name: "Transactions", icon: List, color: "#EC4899", href: "/transactions" },
     { name: "Budgets", icon: PieChart, color: "#10B981", href: "/budgets" },
     { name: "Categories", icon: FileText, color: "#F59E0B", href: "/categories" },
-    { name: "Profile", icon: User, color: "#3B82F6", href: "/profile" },
     { name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
 ];
 

@@ -10,8 +10,7 @@ import Accounts from "./pages/Accounts.jsx";
 import Transactions from "./pages/Transactions.jsx";
 import Budgets from "./pages/Budgets.jsx";
 import Categories from "./pages/Categories.jsx";
-import Profile from "./pages/Profile.jsx";
-import Settings from "./pages/Settings.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
 
 const App = () => {
 
@@ -34,8 +33,7 @@ const App = () => {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/budgets" element={<Budgets />} />
             <Route path="/categories" element={<Categories />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Dashboard />} /> 
           </Routes>
        
