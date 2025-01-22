@@ -6,6 +6,7 @@ const ExpenditureTable = ({ transactions, onDeleteTransaction }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredProducts, setFilteredProducts] = useState(transactions);
 
+    // Handle search input
     const handleSearch = (e) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
@@ -17,6 +18,7 @@ const ExpenditureTable = ({ transactions, onDeleteTransaction }) => {
         setFilteredProducts(filtered);
     };
 
+    // Get color for transaction type
     const getTypeColor = (type) => {
         switch (type) {
             case "Income":
@@ -67,7 +69,7 @@ const ExpenditureTable = ({ transactions, onDeleteTransaction }) => {
                                 Type
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                Cost
+                                Amount
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                                 Actions
@@ -94,7 +96,7 @@ const ExpenditureTable = ({ transactions, onDeleteTransaction }) => {
                                     {product.type}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                    Ksh. {product.price.toFixed(2)}
+                                    Ksh. {product.amount.toFixed(2)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                     <button

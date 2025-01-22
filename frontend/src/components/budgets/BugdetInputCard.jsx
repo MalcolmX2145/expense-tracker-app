@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
-const BudgetInputCard = ({ onSave }) => {
+const BudgetInputCard = ({ onSave, categories }) => {
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState("");
   const [spent, setSpent] = useState("");
@@ -29,21 +29,24 @@ const BudgetInputCard = ({ onSave }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      <h2 className="text-lg font-semibold text-gray-100 mb-4">
-        Add Budget
-      </h2>
+      <h2 className="text-lg font-semibold text-gray-100 mb-4">Add Budget</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
             Category
           </label>
-          <input
-            type="text"
+          <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            placeholder="Enter category"
             className="w-full bg-gray-700 text-gray-100 placeholder-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          >
+            <option value="">Select a category</option>
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">

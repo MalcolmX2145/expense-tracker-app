@@ -24,7 +24,7 @@ const Categories = () => {
       <div className="px-6">
         <h1 className="text-xl font-semibold text-gray-100 mb-2">Income Categories</h1>
         <hr className="border-t border-gray-600 mb-6" />
-        <div className="space-y-2"> {/* Adds spacing between items */}
+        <div className="space-y-2">
           {incomeCategories.map((category, index) => (
             <CategoryItem
               key={index}
@@ -40,7 +40,7 @@ const Categories = () => {
       <div className="px-6">
         <h1 className="text-xl font-semibold text-gray-100 mb-2">Expense Categories</h1>
         <hr className="border-t border-gray-600 mb-6" />
-        <div className="space-y-2"> {/* Adds spacing between items */}
+        <div className="space-y-2">
           {expenseCategories.map((category, index) => (
             <CategoryItem
               key={index}

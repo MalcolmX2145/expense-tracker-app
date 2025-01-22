@@ -1,89 +1,142 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { PlusCircle } from "lucide-react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const AddTransaction = ({ onAddTransaction }) => {
-    const [category, setCategory] = useState("");
-    const [type, setType] = useState("Income");
-    const [price, setPrice] = useState("");
+    const incomeCategories = ["Gifts", "Salary", "Other Income"];
+    const expenseCategories = ["Rent", "Entertainment", "Utilities"];
+
+    const [formData, setFormData] = useState({
+        category: "",
+        type: "Income",
+        amount: "",
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        // Reset category when type changes
+        if (name === "type") {
+            setFormData({ ...formData, type: value, category: "" });
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!category || !price || isNaN(price)) {
-            toast.error("Please provide valid category and price!");
+        // Validate the form data
+        if (!formData.category || !formData.amount || isNaN(formData.amount)) {
+            alert("Please fill out all fields with valid data.");
             return;
         }
 
-        const newTransaction = {
-            id: Date.now(),
-            category,
-            type,
-            price: parseFloat(price),
-        };
+        // Call the parent's function
+        onAddTransaction({
+            category: formData.category,
+            type: formData.type,
+            amount: parseFloat(formData.amount),
+        });
 
-        onAddTransaction(newTransaction);
-        toast.success("Transaction added successfully!");
+        // Clear the form
+        setFormData({ category: "", type: "Income", amount: "" });
+    };
 
-        setCategory("");
-        setType("Income");
-        setPrice("");
+    const renderCategoryField = () => {
+        if (formData.type === "Income") {
+            return (
+                <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-700 rounded-md"
+                >
+                    <option value="">Select a category</option>
+                    {incomeCategories.map((category, index) => (
+                        <option key={index} value={category}>
+                            {category}
+                        </option>
+                    ))}
+                </select>
+            );
+        } else if (formData.type === "Expense") {
+            return (
+                <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-700 rounded-md"
+                >
+                    <option value="">Select a category</option>
+                    {expenseCategories.map((category, index) => (
+                        <option key={index} value={category}>
+                            {category}
+                        </option>
+                    ))}
+                </select>
+            );
+        }
+
+        // Default input for other types
+        return (
+            <input
+                type="text"
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className="mt-1 block w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-700 rounded-md"
+            />
+        );
     };
 
     return (
-        <motion.div
-            className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700 mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-        >
-            <h2 className="text-xl font-semibold text-gray-100 mb-4">
-                Add New Transaction
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-gray-400 mb-1">Category</label>
-                    <input
-                        type="text"
-                        placeholder="Category (e.g., Electronics)"
-                        className="bg-gray-700 text-white placeholder-gray-400 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label className="block text-gray-400 mb-1">Type</label>
-                    <select
-                        className="bg-gray-700 text-white rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                    >
-                        <option value="Income">Income</option>
-                        <option value="Expense">Expense</option>
-                        <option value="Transfer">Transfer</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-gray-400 mb-1">Amount</label>
-                    <input
-                        type="number"
-                        placeholder="Amount (e.g., 59.99)"
-                        className="bg-gray-700 text-white placeholder-gray-400 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <label htmlFor="type" className="block text-sm font-medium text-gray-300">
+                    Type
+                </label>
+                <select
+                    id="type"
+                    name="type"
+                    value={formData.type}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-700 rounded-md"
                 >
-                    <PlusCircle size={18} className="mr-2" />
-                    Add Transaction
-                </button>
-            </form>
-        </motion.div>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                    <option value="Transfer">Transfer</option>
+                </select>
+            </div>
+
+            <div>
+                <label htmlFor="category" className="block text-sm font-medium text-gray-300">
+                    Category
+                </label>
+                {renderCategoryField()}
+            </div>
+
+            <div>
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-300">
+                    Amount
+                </label>
+                <input
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    value={formData.amount}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-700 rounded-md"
+                />
+            </div>
+
+            <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+            >
+                Add Transaction
+            </button>
+        </form>
     );
 };
 

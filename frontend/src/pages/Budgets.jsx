@@ -6,6 +6,13 @@ import { useState } from "react";
 
 const Budgets = () => {
   const [budgets, setBudgets] = useState([]);
+  const [categories, setCategories] = useState([
+    "Electronics",
+    "Groceries",
+    "Transportation",
+    "Savings",
+    "Entertainment",
+  ]);
 
   const handleAddBudget = (newBudget) => {
     setBudgets([...budgets, newBudget]);
@@ -18,13 +25,11 @@ const Budgets = () => {
 
   return (
     <div className="flex-1 overflow-auto relative z-10 flex flex-col">
-      {/* No margin or spacing for the Header */}
       <Header title="Budgets" />
       <div className="flex flex-col space-y-6 p-6">
         <BudgetCard budgets={budgets} onDeleteBudget={handleDeleteBudget} />
-        {/* Visible horizontal rule */}
         <hr className="border-t border-gray-600 my-6" />
-        <BudgetInputCard onSave={handleAddBudget} />
+        <BudgetInputCard onSave={handleAddBudget} categories={categories} />
       </div>
     </div>
   );
