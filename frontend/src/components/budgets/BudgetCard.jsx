@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trash, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 const BudgetCard = ({ budgets, onDeleteBudget }) => {
   return (
@@ -12,7 +12,7 @@ const BudgetCard = ({ budgets, onDeleteBudget }) => {
         >
           <div className="px-4 py-5 sm:p-6">
             <span className="flex items-center text-sm font-medium text-gray-400 mb-2">
-              <Trash size={20} className="mr-2" style={{ color: budget.color }} />
+              {budget.icon && <budget.icon size={20} className="mr-2" style={{ color: budget.color }} />}
               {budget.category}
             </span>
             <p className="text-sm text-gray-400">

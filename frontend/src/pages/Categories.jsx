@@ -44,23 +44,29 @@ const Categories = () => {
     }
   };
 
-  const handleSave = (newName) => {
+  const handleSave = (updatedCategory) => {
     if (isIncome) {
       setIncomeCategories((prev) =>
         prev.map((cat) =>
-          cat.name === currentCategory.name ? { ...cat, name: newName } : cat
+          cat.name === currentCategory.name
+            ? { ...cat, name: updatedCategory.name, icon: updatedCategory.icon }
+            : cat
         )
       );
     } else {
       setExpenseCategories((prev) =>
         prev.map((cat) =>
-          cat.name === currentCategory.name ? { ...cat, name: newName } : cat
+          cat.name === currentCategory.name
+            ? { ...cat, name: updatedCategory.name, icon: updatedCategory.icon }
+            : cat
         )
       );
     }
-
-    toast.success(`Category updated to "${newName}"`);
+  
+    toast.success(`Category updated to "${updatedCategory.name}"`);
   };
+  
+  
 
   return (
     <div className="flex-1 overflow-auto relative z-10 flex flex-col space-y-6">
