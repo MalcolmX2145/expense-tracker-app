@@ -1,15 +1,15 @@
 # 💰 Expense Tracking Web Application  
 
-A full-stack expense tracking application built with **React, Express.js, PostgreSQL, and OAuth authentication**. This app helps users manage their income, expenses, and transfers with analytics, budgeting, and multiple account support.
+A full-stack expense tracking application built with **React, Supabase, and PostgreSQL**. This app helps users manage their income, expenses, and transfers with analytics, budgeting, and multiple account support.
 
 ---
 
 ## 🚀 Tech Stack
 
-- **Frontend**: React (with hooks & context API)  
-- **Backend**: Express.js (REST API)  
-- **Database**: PostgreSQL  
-- **Authentication**: OAuth (Google, GitHub, etc.)  
+- **Frontend**: React (with hooks & React Router)  
+- **Backend**: Supabase (PostgreSQL + authentication + REST API)  
+- **Database**: PostgreSQL (via Supabase)  
+- **Authentication**: Supabase Auth (Google, GitHub, etc.)  
 - **State Management**: React Context / Redux (optional)  
 
 ---
@@ -42,7 +42,7 @@ A full-stack expense tracking application built with **React, Express.js, Postgr
 
 - **🔹 Category Selection for Transactions**  
   - Choose from predefined or custom **Income** and **Expense** categories.  
-  - Example categories:
+  - Example categories:  
     - **Income:** Salary, Freelance, Interest Earnings  
     - **Expense:** Rent, Food, Entertainment  
 
@@ -50,7 +50,7 @@ A full-stack expense tracking application built with **React, Express.js, Postgr
 
 ## 🔐 Authentication & Security
 
-- Secure **OAuth authentication** with Google/GitHub.  
+- Secure **Supabase authentication** with Google/GitHub.  
 - JWT-based user sessions.  
 - Role-based access control (future).  
 

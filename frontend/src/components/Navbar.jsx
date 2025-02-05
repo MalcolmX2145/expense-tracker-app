@@ -72,15 +72,15 @@ const Navbar = () => {
 
         {/* Logout button */}
         <motion.div
-          className="mt-4 p-4 flex items-center cursor-pointer rounded-lg hover:bg-gray-700 transition-colors"
+          className="mt-4 p-4 flex items-center cursor-pointer rounded-lg transition-colors hover:bg-gray-700"
           whileHover={{ scale: 1.05 }}
           onClick={handleLogout} // Trigger logout on click
         >
-          <LogOut size={20} className="text-gray-400" />
+          <LogOut size={20} className="text-gray-400 hover:text-red-600" />
           <AnimatePresence>
             {isSidebarOpen && (
               <motion.span
-                className="ml-4 whitespace-nowrap text-gray-400"
+                className="ml-4 whitespace-nowrap text-gray-400 group-hover:text-white"
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: "auto" }}
                 exit={{ opacity: 0, width: 0 }}
