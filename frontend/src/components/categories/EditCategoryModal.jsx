@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Gift,
   Wallet,
@@ -18,40 +18,46 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
-const EditCategoryModal = ({ isOpen, onClose, category, onSave }) => {
-  const [newName, setNewName] = useState(category?.name || "");
-  const [newIcon, setNewIcon] = useState(category?.icon || Gift);
+const iconMap = {
+  Gift,
+  Wallet,
+  DollarSign,
+  Home,
+  Coffee,
+  ShoppingCart,
+  Car,
+  Book,
+  Plane,
+  Heart,
+  Music,
+  Tv,
+  Smile,
+  Briefcase,
+  PieChart,
+  ShoppingBag,
+};
 
-  const icons = [
-    Gift,
-    Wallet,
-    DollarSign,
-    Home,
-    Coffee,
-    ShoppingCart,
-    Car,
-    Book,
-    Plane,
-    Heart,
-    Music,
-    Tv,
-    Smile,
-    Briefcase,
-    PieChart,
-    ShoppingBag,
-  ];
+const EditCategoryModal = ({ isOpen, onClose, category, onSave }) => {
+  const [newName, setNewName] = useState("");
+  const [newIcon, setNewIcon] = useState("Gift");
+
+  useEffect(() => {
+    if (category) {
+      setNewName(category.name || "");
+      setNewIcon(category.icon || "Gift");
+    }
+  }, [category]);
 
   if (!isOpen) return null;
 
   const handleSave = () => {
-    if (!newIcon) {
-      console.error("Icon is undefined!");
-      return;
-    }
-    onSave({ name: newName, icon: newIcon });
+    onSave({
+      ...category,
+      name: newName,
+      icon: newIcon, // Save the icon as a string
+    });
     onClose();
   };
-  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -78,17 +84,20 @@ const EditCategoryModal = ({ isOpen, onClose, category, onSave }) => {
           id="iconSelector"
           className="flex space-x-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-700 py-2 px-1 border border-gray-600 rounded mb-4"
         >
-          {icons.map((Icon, index) => (
-            <button
-              key={index}
-              onClick={() => setNewIcon(Icon)}
-              className={`p-2 rounded-full border-2 ${
-                newIcon === Icon ? "border-indigo-500" : "border-transparent"
-              } hover:border-indigo-500`}
-            >
-              <Icon size={24} className="text-white" />
-            </button>
-          ))}
+          {Object.keys(iconMap).map((iconKey) => {
+            const IconComponent = iconMap[iconKey];
+            return (
+              <button
+                key={iconKey}
+                onClick={() => setNewIcon(iconKey)}
+                className={`p-2 rounded-full border-2 ${
+                  newIcon === iconKey ? "border-indigo-500" : "border-transparent"
+                } hover:border-indigo-500`}
+              >
+                <IconComponent size={24} className="text-white" />
+              </button>
+            );
+          })}
         </div>
 
         {/* Action Buttons */}
