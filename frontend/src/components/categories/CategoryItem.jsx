@@ -1,8 +1,46 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Ellipsis } from "lucide-react";
+import {
+  Gift,
+  Wallet,
+  DollarSign,
+  Home,
+  Coffee,
+  ShoppingCart,
+  Car,
+  Book,
+  Plane,
+  Heart,
+  Music,
+  Tv,
+  Smile,
+  Briefcase,
+  PieChart,
+  ShoppingBag,
+} from "lucide-react";
 
-const CategoryItem = ({ icon: Icon, color, name, onEdit, onDelete }) => {
+// Map string names to actual icon components
+const iconMap = {
+  Gift,
+  Wallet,
+  DollarSign,
+  Home,
+  Coffee,
+  ShoppingCart,
+  Car,
+  Book,
+  Plane,
+  Heart,
+  Music,
+  Tv,
+  Smile,
+  Briefcase,
+  PieChart,
+  ShoppingBag,
+};
+
+const CategoryItem = ({ icon, color, name, onEdit, onDelete }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -22,6 +60,9 @@ const CategoryItem = ({ icon: Icon, color, name, onEdit, onDelete }) => {
     };
   }, []);
 
+  // Convert string icon name to component
+  const IconComponent = iconMap[icon] || Gift; // Default to Gift if undefined
+
   return (
     <motion.div
       className="relative flex items-center justify-between bg-gray-800 bg-opacity-50 backdrop-blur-md p-4 rounded-md shadow-md border border-gray-700"
@@ -32,7 +73,7 @@ const CategoryItem = ({ icon: Icon, color, name, onEdit, onDelete }) => {
           className="flex items-center justify-center w-10 h-10 rounded-full"
           style={{ backgroundColor: color }}
         >
-          <Icon size={20} className="text-white" />
+          <IconComponent size={20} className="text-white" />
         </div>
         <span className="ml-4 text-gray-100 font-medium">{name}</span>
       </div>

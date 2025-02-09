@@ -4,10 +4,8 @@ import CategoryItem from "../components/categories/CategoryItem.jsx";
 import EditCategoryModal from "../components/categories/EditCategoryModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import supabase from "../supabase-client.js"; // Import Supabase
-import { Gift, Wallet, DollarSign, Plus } from "lucide-react";
-
-const iconMap = { Gift, Wallet, DollarSign };
+import supabase from "../supabase-client.js";
+import { Plus } from "lucide-react";
 
 const Categories = () => {
   const [incomeCategories, setIncomeCategories] = useState([]);
@@ -19,16 +17,21 @@ const Categories = () => {
   // Fetch categories from Supabase
   useEffect(() => {
     const fetchCategories = async () => {
-      let { data, error } = await supabase.from("categories").select("*");
+      const { data, error } = await supabase.from("categories").select("*");
       if (error) {
         console.error("Error fetching categories:", error);
-      } else {
-        const income = data.filter((cat) => cat.type === "income");
-        const expense = data.filter((cat) => cat.type === "expense");
-
-        setIncomeCategories(income);
-        setExpenseCategories(expense);
+        toast.error("Failed to fetch categories.");
+        return;
       }
+
+      console.log("Fetched Categories from Supabase:", data);
+
+      // Categorize data into income and expense categories
+      const income = data.filter((cat) => cat.type === "income");
+      const expense = data.filter((cat) => cat.type === "expense");
+
+      setIncomeCategories(income);
+      setExpenseCategories(expense);
     };
 
     fetchCategories();
@@ -60,9 +63,9 @@ const Categories = () => {
 
   // Save category (create/update)
   const handleSave = async (updatedCategory) => {
-    let updatedData = {
+    const updatedData = {
       name: updatedCategory.name.trim(),
-      icon: updatedCategory.icon.name, // Store icon as a string
+      icon: updatedCategory.icon || "Gift", // Store icon as string
       color: updatedCategory.color || "#FFFFFF",
       type: isIncome ? "income" : "expense",
     };
@@ -87,6 +90,7 @@ const Categories = () => {
         return;
       }
 
+      // Update state
       if (isIncome) {
         setIncomeCategories((prev) =>
           prev.map((cat) => (cat.id === data.id ? data : cat))
@@ -99,7 +103,7 @@ const Categories = () => {
 
       toast.success(`Category updated to "${updatedCategory.name}"`);
     } else {
-      // Create new category
+      // Insert new category
       const { data, error } = await supabase
         .from("categories")
         .insert([updatedData])
@@ -112,6 +116,7 @@ const Categories = () => {
         return;
       }
 
+      // Add new category
       if (isIncome) {
         setIncomeCategories((prev) => [...prev, data]);
       } else {
@@ -136,7 +141,7 @@ const Categories = () => {
           {incomeCategories.map((category) => (
             <CategoryItem
               key={category.id}
-              icon={iconMap[category.icon] || Gift} // Convert string to icon component
+              icon={category.icon} // Pass icon name as string
               color={category.color}
               name={category.name}
               onEdit={() => handleEdit(category, true)}
@@ -167,7 +172,7 @@ const Categories = () => {
           {expenseCategories.map((category) => (
             <CategoryItem
               key={category.id}
-              icon={iconMap[category.icon] || Wallet}
+              icon={category.icon} // Pass icon name as string
               color={category.color}
               name={category.name}
               onEdit={() => handleEdit(category, false)}
