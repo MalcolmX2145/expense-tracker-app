@@ -1,21 +1,40 @@
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import supabase from "../../supabase-client"; // Import Supabase client
 
-const ExpenditureTable = ({ transactions, onDeleteTransaction }) => {
+const ExpenditureTable = ({ transactions, onDeleteTransaction, onEditTransaction }) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredProducts, setFilteredProducts] = useState(transactions);
+    const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+    const [categories, setCategories] = useState({});
+
+    // Fetch categories and map them by ID
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const { data, error } = await supabase.from("categories").select("id, name");
+            if (error) {
+                console.error("Error fetching categories:", error);
+                return;
+            }
+            const categoryMap = {};
+            data.forEach((category) => {
+                categoryMap[category.id] = category.name;
+            });
+            setCategories(categoryMap);
+        };
+        fetchCategories();
+    }, []);
 
     // Handle search input
     const handleSearch = (e) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
         const filtered = transactions.filter(
-            (product) =>
-                product.category.toLowerCase().includes(term) ||
-                product.type.toLowerCase().includes(term)
+            (transaction) =>
+                (categories[transaction.category_id]?.toLowerCase() || "").includes(term) ||
+                transaction.type.toLowerCase().includes(term)
         );
-        setFilteredProducts(filtered);
+        setFilteredTransactions(filtered);
     };
 
     // Get color for transaction type
@@ -32,9 +51,9 @@ const ExpenditureTable = ({ transactions, onDeleteTransaction }) => {
         }
     };
 
-    // Update the filtered products when transactions change
+    // Update filtered transactions when the transactions change
     useEffect(() => {
-        setFilteredProducts(transactions);
+        setFilteredTransactions(transactions);
     }, [transactions]);
 
     return (
@@ -78,36 +97,32 @@ const ExpenditureTable = ({ transactions, onDeleteTransaction }) => {
                     </thead>
 
                     <tbody className="divide-y divide-gray-700">
-                        {filteredProducts.map((product) => (
+                        {filteredTransactions.map((transaction) => (
                             <motion.tr
-                                key={product.id}
+                                key={transaction.id}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.3 }}
                             >
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                    {product.category}
+                                    {categories[transaction.category_id] || "Unknown"}
                                 </td>
-                                <td
-                                    className={`px-6 py-4 whitespace-nowrap text-sm ${getTypeColor(
-                                        product.type
-                                    )}`}
-                                >
-                                    {product.type}
+                                <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${getTypeColor(transaction.type)}`}>
+                                    {transaction.type}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                    Ksh. {product.amount.toFixed(2)}
+                                    Ksh. {transaction.amount.toFixed(2)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                     <button
                                         className="text-indigo-400 hover:text-indigo-300 mr-2"
-                                        onClick={() => alert(`Edit transaction: ${product.id}`)}
+                                        onClick={() => onEditTransaction(transaction)}
                                     >
                                         <Edit size={18} />
                                     </button>
                                     <button
                                         className="text-red-400 hover:text-red-300"
-                                        onClick={() => onDeleteTransaction(product.id)}
+                                        onClick={() => onDeleteTransaction(transaction.id)}
                                     >
                                         <Trash2 size={18} />
                                     </button>
