@@ -3,27 +3,54 @@ import { Edit, Search, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import supabase from "../../supabase-client"; // Import Supabase client
 
-const ExpenditureTable = ({ transactions, onDeleteTransaction, onEditTransaction }) => {
+const ExpenditureTable = ({ onDeleteTransaction, onEditTransaction }) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+    const [transactions, setTransactions] = useState([]);
+    const [filteredTransactions, setFilteredTransactions] = useState([]);
     const [categories, setCategories] = useState({});
+    const [user, setUser] = useState(null);
+
+    // Fetch user on mount
+    useEffect(() => {
+        const fetchUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                setUser(user);
+                fetchTransactions(user.id);
+                fetchCategories();
+            }
+        };
+        fetchUser();
+    }, []);
+
+    // Fetch transactions for the logged-in user
+    const fetchTransactions = async (userId) => {
+        const { data, error } = await supabase
+            .from("transactions")
+            .select("*")
+            .eq("user_id", userId);
+
+        if (error) {
+            console.error("Error fetching transactions:", error);
+        } else {
+            setTransactions(data);
+            setFilteredTransactions(data);
+        }
+    };
 
     // Fetch categories and map them by ID
-    useEffect(() => {
-        const fetchCategories = async () => {
-            const { data, error } = await supabase.from("categories").select("id, name");
-            if (error) {
-                console.error("Error fetching categories:", error);
-                return;
-            }
-            const categoryMap = {};
-            data.forEach((category) => {
-                categoryMap[category.id] = category.name;
-            });
-            setCategories(categoryMap);
-        };
-        fetchCategories();
-    }, []);
+    const fetchCategories = async () => {
+        const { data, error } = await supabase.from("categories").select("id, name");
+        if (error) {
+            console.error("Error fetching categories:", error);
+            return;
+        }
+        const categoryMap = {};
+        data.forEach((category) => {
+            categoryMap[category.id] = category.name;
+        });
+        setCategories(categoryMap);
+    };
 
     // Handle search input
     const handleSearch = (e) => {
@@ -50,11 +77,6 @@ const ExpenditureTable = ({ transactions, onDeleteTransaction, onEditTransaction
                 return "text-gray-300";
         }
     };
-
-    // Update filtered transactions when the transactions change
-    useEffect(() => {
-        setFilteredTransactions(transactions);
-    }, [transactions]);
 
     return (
         <motion.div

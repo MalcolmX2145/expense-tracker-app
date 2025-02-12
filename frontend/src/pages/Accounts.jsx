@@ -41,7 +41,7 @@ const Accounts = () => {
     }
   };
 
-  // Add a new account
+  // Add a new account for the logged-in user
   const addAccount = async () => {
     if (!user) return;
 
@@ -61,9 +61,14 @@ const Accounts = () => {
     }
   };
 
-  // Delete an account
+  // Delete an account (Ensure user_id is used)
   const deleteAccount = async (id) => {
-    const { error } = await supabase.from("accounts").delete().eq("id", id);
+    if (!user) return;
+
+    const { error } = await supabase.from("accounts")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id); // Ensure only deleting the logged-in user's account
 
     if (error) {
       console.error("Error deleting account:", error);
@@ -79,10 +84,12 @@ const Accounts = () => {
     setIsEditing(true);
   };
 
-  // Save updated account details
+  // Save updated account details (Ensure user_id is used)
   const saveEditedAccount = async (updatedAccount) => {
+    if (!user) return;
+
     console.log("Updating account in Supabase:", updatedAccount);
-  
+
     const { data, error } = await supabase
       .from("accounts")
       .update({
@@ -91,20 +98,19 @@ const Accounts = () => {
         icon: updatedAccount.icon, // Save as string (e.g., "PiggyBank")
       })
       .eq("id", updatedAccount.id)
+      .eq("user_id", user.id) // Ensure only updating the logged-in user's account
       .select()
       .single();
-  
+
     if (error) {
       console.error("Error updating account:", error);
     } else {
       console.log("Account successfully updated in Supabase:", data);
-  
+
       setAccounts((prevAccounts) =>
-        prevAccounts.map((acc) =>
-          acc.id === data.id ? { ...data } : acc
-        )
+        prevAccounts.map((acc) => (acc.id === data.id ? { ...data, icon: iconMap[data.icon] || Wallet } : acc))
       );
-  
+
       setIsEditing(false);
     }
   };

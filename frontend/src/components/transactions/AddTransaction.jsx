@@ -54,36 +54,44 @@ const AddTransaction = ({ onAddTransaction }) => {
             toast.error("Please fill out all fields with valid data.");
             return;
         }
-    
+
+        // Fetch the logged-in user's ID
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError || !userData?.user) {
+            toast.error("You must be logged in to add transactions!");
+            return;
+        }
+
         try {
             const { data, error } = await supabase
                 .from("transactions")
                 .insert([
                     {
-                        category_id: formData.category, // Ensure sending UUID
-                        account_id: formData.account,  // Ensure sending UUID
+                        category_id: formData.category,
+                        account_id: formData.account,
                         type: formData.type,
                         amount: parseFloat(formData.amount),
+                        user_id: userData.user.id, // Assign user_id here
                     },
-                ]);
-    
+                ])
+                .select();
+
             if (error) {
-                throw error; // If there's an error, it will go to the catch block
+                throw error;
             }
-    
+
             toast.success("Transaction added successfully!");
             setFormData({ category: "", account: "", type: "Income", amount: "" });
-    
+
             // Refresh transactions list
             if (onAddTransaction) {
-                onAddTransaction();
+                onAddTransaction(data[0]); // Pass the new transaction to the parent component
             }
         } catch (error) {
             toast.error(`Error adding transaction: ${error.message}`);
             console.error("Supabase Error:", error);
         }
     };
-    
 
     return (
         <div>

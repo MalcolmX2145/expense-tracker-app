@@ -13,11 +13,33 @@ const Categories = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [isIncome, setIsIncome] = useState(true);
+  const [userId, setUserId] = useState(null);
 
-  // Fetch categories from Supabase
+  // Get the logged-in user
   useEffect(() => {
+    const fetchUser = async () => {
+      const { data: user, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error);
+        toast.error("Failed to get user information.");
+        return;
+      }
+      setUserId(user?.user?.id);
+    };
+
+    fetchUser();
+  }, []);
+
+  // Fetch categories for the logged-in user
+  useEffect(() => {
+    if (!userId) return;
+
     const fetchCategories = async () => {
-      const { data, error } = await supabase.from("categories").select("*");
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .eq("user_id", userId); // Fetch only categories belonging to the logged-in user
+
       if (error) {
         console.error("Error fetching categories:", error);
         toast.error("Failed to fetch categories.");
@@ -26,7 +48,6 @@ const Categories = () => {
 
       console.log("Fetched Categories from Supabase:", data);
 
-      // Categorize data into income and expense categories
       const income = data.filter((cat) => cat.type === "income");
       const expense = data.filter((cat) => cat.type === "expense");
 
@@ -35,7 +56,7 @@ const Categories = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [userId]);
 
   // Open edit modal
   const handleEdit = (category, isIncomeCategory) => {
@@ -46,7 +67,12 @@ const Categories = () => {
 
   // Delete category
   const handleDelete = async (id, isIncomeCategory) => {
-    const { error } = await supabase.from("categories").delete().eq("id", id);
+    const { error } = await supabase
+      .from("categories")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", userId); // Ensure only the logged-in user's category is deleted
+
     if (error) {
       toast.error("Failed to delete category");
       return;
@@ -63,11 +89,17 @@ const Categories = () => {
 
   // Save category (create/update)
   const handleSave = async (updatedCategory) => {
+    if (!userId) {
+      toast.error("User not authenticated!");
+      return;
+    }
+
     const updatedData = {
       name: updatedCategory.name.trim(),
-      icon: updatedCategory.icon || "Gift", // Store icon as string
+      icon: updatedCategory.icon || "Gift",
       color: updatedCategory.color || "#FFFFFF",
       type: isIncome ? "income" : "expense",
+      user_id: userId, // Ensure category belongs to the logged-in user
     };
 
     if (!updatedData.name) {
@@ -81,6 +113,7 @@ const Categories = () => {
         .from("categories")
         .update(updatedData)
         .eq("id", currentCategory.id)
+        .eq("user_id", userId) // Ensure only the logged-in user's category is updated
         .select()
         .single();
 
@@ -90,7 +123,6 @@ const Categories = () => {
         return;
       }
 
-      // Update state
       if (isIncome) {
         setIncomeCategories((prev) =>
           prev.map((cat) => (cat.id === data.id ? data : cat))
@@ -116,7 +148,6 @@ const Categories = () => {
         return;
       }
 
-      // Add new category
       if (isIncome) {
         setIncomeCategories((prev) => [...prev, data]);
       } else {
@@ -141,7 +172,7 @@ const Categories = () => {
           {incomeCategories.map((category) => (
             <CategoryItem
               key={category.id}
-              icon={category.icon} // Pass icon name as string
+              icon={category.icon}
               color={category.color}
               name={category.name}
               onEdit={() => handleEdit(category, true)}
@@ -172,7 +203,7 @@ const Categories = () => {
           {expenseCategories.map((category) => (
             <CategoryItem
               key={category.id}
-              icon={category.icon} // Pass icon name as string
+              icon={category.icon}
               color={category.color}
               name={category.name}
               onEdit={() => handleEdit(category, false)}
