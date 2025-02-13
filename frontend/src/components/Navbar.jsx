@@ -7,15 +7,15 @@ import supabase from "../supabase-client";
 
 const NAVBAR_ITEMS = [
   { name: "Dashboard", icon: BarChart2, color: "#6366f1", href: "/dashboard" },
+  { name: "Categories", icon: FileText, color: "#F59E0B", href: "/categories" },
   { name: "Accounts", icon: CreditCard, color: "#8B5CF6", href: "/accounts" },
   { name: "Transactions", icon: List, color: "#EC4899", href: "/transactions" },
   { name: "Budgets", icon: PieChart, color: "#10B981", href: "/budgets" },
-  { name: "Categories", icon: FileText, color: "#F59E0B", href: "/categories" },
   { name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
 ];
 
 const Navbar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation(); // Get the current location
   const { setUser } = useAuth(); // Use the setUser function to logout
 
