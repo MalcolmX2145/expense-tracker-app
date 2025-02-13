@@ -1,25 +1,41 @@
+// BudgetInputCard.jsx
 import { useState } from "react";
 import { motion } from "framer-motion";
+import supabase from "../../supabase-client";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const BudgetInputCard = ({ onSave, categories }) => {
+const BudgetInputCard = ({ onSave, categories = [], existingBudgets = [] }) => {
+  const { user } = useAuth();
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState("");
-  const [spent, setSpent] = useState("");
 
-  const handleSave = () => {
-    const remaining = limit - spent;
+  const handleSave = async () => {
+    if (!user) {
+      toast.error("User not authenticated");
+      return;
+    }
+
+    if (!category) {
+      toast.error("Please select a category");
+      return;
+    }
+
+    if (existingBudgets.some((budget) => budget.category_id === category)) {
+      toast.warning("A budget for this category already exists.");
+      return;
+    }
+
     const newBudget = {
-      category,
-      limit: parseFloat(limit),
-      spent: parseFloat(spent),
-      remaining,
-      iconColor: "#00bcd4", // Example color
+      category_id: category,
+      limit_value: parseFloat(limit),
+      user_id: user.id,
     };
 
     onSave(newBudget);
     setCategory("");
     setLimit("");
-    setSpent("");
   };
 
   return (
@@ -41,9 +57,9 @@ const BudgetInputCard = ({ onSave, categories }) => {
             className="w-full bg-gray-700 text-gray-100 placeholder-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a category</option>
-            {categories.map((cat, index) => (
-              <option key={index} value={cat}>
-                {cat}
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
               </option>
             ))}
           </select>
@@ -57,18 +73,6 @@ const BudgetInputCard = ({ onSave, categories }) => {
             value={limit}
             onChange={(e) => setLimit(e.target.value)}
             placeholder="Enter limit"
-            className="w-full bg-gray-700 text-gray-100 placeholder-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
-            Spent
-          </label>
-          <input
-            type="number"
-            value={spent}
-            onChange={(e) => setSpent(e.target.value)}
-            placeholder="Enter spent amount"
             className="w-full bg-gray-700 text-gray-100 placeholder-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
